@@ -1,0 +1,153 @@
+#+TITLE:       the title to be shown (default is the buffer name)
+#+AUTHOR:      fuwu.zzh@alibaba-inc.com
+#+DATE:        a date, an Org timestamp1, or a format string for format-time-string
+#+EMAIL:       his/her email address (default from user-mail-address)
+#+LATEX_HEADER: \usepackage{xeCJK}
+#+LATEX_HEADER: \setCJKmainfont{SimSun}
+
+#+DESCRIPTION: the page description, e.g. for the XHTML meta tag
+#+KEYWORDS:    the page keywords, e.g. for the XHTML meta tag
+#+LANGUAGE:    language for HTML, e.g. ‘en’ (org-export-default-language)
+#+TEXT:        Some descriptive text to be inserted at the beginning.
+#+TEXT:        Several lines may be given.
+#+OPTIONS:     H:2 num:t toc:t \n:nil @:t ::t |:t ^:t f:t TeX:t ...
+#+BIND:        lisp-var lisp-val, e.g.: org-export-latex-low-levels itemize
+               You need to confirm using these, or configure org-export-allow-BIND
+#+LINK_UP:     the ``up'' link of an exported page
+#+LINK_HOME:   the ``home'' link of an exported page
+#+LATEX_HEADER: extra line(s) for the LaTeX header, like \usepackage{xyz}
+#+EXPORT_SELECT_TAGS:   Tags that select a tree for export
+#+EXPORT_EXCLUDE_TAGS:  Tags that exclude a tree from export
+#+XSLT:        the XSLT stylesheet used by DocBook exporter to generate FO file
+* org-mode
+** 大纲
+正在编写大纲
+** 轻量级标记语言
+* 字体
+# 这个符号干啥用的？
+*粗体*
+/斜体/
++删除线+
+_下划线_
+下标： H_2 O
+上标： E=mc^2
+等宽字：  =git=  或者 ～git～
+* 创建链接
+http://www.astro.uva.nl/~dominik            on the web
+file:/home/dominik/images/jupiter.jpg       file, absolute path
+/home/dominik/images/jupiter.jpg            same as above
+file:papers/last.pdf                        file, relative path
+file:projects.org                           another Org file
+docview:papers/last.pdf::NNN                open file in doc-view mode at page NNN
+id:B7423F4D-2E8A-471B-8810-C40F074717E9     Link to heading by ID
+news:comp.emacs                             Usenet link
+mailto:adent@galaxy.net                     Mail link
+vm:folder                                   VM folder link
+vm:folder#id                                VM message link
+wl:folder#id                                WANDERLUST message link
+mhe:folder#id                               MH-E message link
+rmail:folder#id                             RMAIL message link
+gnus:group#id                               Gnus article link
+bbdb:R.*Stallman                            BBDB link (with regexp)
+irc:/irc.com/#emacs/bob                     IRC link
+info:org:External%20links                   Info node link (with encoded space)
+
+支持html,pdf等格式
+* 表格
+#+CAPTION: This is the caption for the next table (or link)
+| Name  | Pone  | Age  |
+|-------+-------+------|
+| name1 | Pone1 | Age1 |
+| name2 | Pone2 | Age2 |
+| name3 | Pone3 | Age3 |
+* 引用表格
+如表格\ref{Table 1}
+* 画图
+#+begin_src ditaa :file test_ditaa.png :cmdline -r -s 0.8
+
+    +-----------+        +---------+
+    |    PLC    |        |         |
+    |  Network  +<------>+   PLC   +<---=---------+
+    |    cRED   |        |  c707   |              |
+    +-----------+        +----+----+              |
+                              ^                   |
+                              |                   |
+                              |  +----------------|-----------------+
+                              |  |                |                 |
+                              v  v                v                 v
+      +----------+       +----+--+--+      +-------+---+      +-----+-----+       Windows clients
+      |          |       |          |      |           |      |           |      +----+      +----+
+      | Database +<----->+  Shared  +<---->+ Executive +<-=-->+ Operator  +<---->|cYEL| . . .|cYEL|
+      |   c707   |       |  Memory  |      |   c707    |      | Server    |      |    |      |    |
+      +--+----+--+       |{d} cGRE  |      +------+----+      |   c707    |      +----+      +----+
+         ^    ^          +----------+             ^           +-------+---+
+         |    |                                   |
+         |    +--------=--------------------------+
+         v
++--------+--------+
+|                 |
+| Millwide System |            -------- Data ---------
+| cBLU            |            --=----- Signals ---=--
++-----------------+
+
+#+END_SRC
+* 画图2
+#+BEGIN_SRC dot :file test_graphviz.png :cmdline -Kdot -Tpng
+digraph G {
+  size="8,6"
+  ratio=expand
+  edge [dir=both]
+  plcnet [shape=box, label="PLC Network"]
+  subgraph cluster_wrapline {
+    label="Wrapline Control System"
+    color=purple
+    subgraph {
+    rank=same
+    exec
+    sharedmem [style=filled, fillcolor=lightgrey, shape=box]
+    }
+    edge[style=dotted, dir=none]
+    exec -> opserver
+    exec -> db
+    plc -> exec
+    edge [style=line, dir=both]
+    exec -> sharedmem
+    sharedmem -> db
+    plc -> sharedmem
+    sharedmem -> opserver
+  }
+  plcnet -> plc [constraint=false]
+  millwide [shape=box, label="Millwide System"]
+  db -> millwide
+
+  subgraph cluster_opclients {
+    color=blue
+    label="Operator Clients"
+    rankdir=LR
+    labelloc=b
+    node[label=client]
+    opserver -> client1
+    opserver -> client2
+    opserver -> client3
+  }
+}
+
+#+end_src
+
+* 画图3
+#+BEGIN_SRC plantuml :file test_uml.png  :cmdline -charset UTF-8
+title Example Sequence Diagram
+activate Client
+Client -> Server: Session Initiation
+note right: Client requests new session
+activate Server
+Client <-- Server: Authorization Request
+note left: Server requires authentication
+Client -> Server: Authorization Response
+note right: Client provides authentication details
+Server --> Client: Session Token
+note left: Session established
+deactivate Server
+Client -> Client: Saves token
+deactivate Client
+#+END_SRC
